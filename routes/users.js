@@ -5,23 +5,22 @@ const service = require('../services/users');
 
 const private = require('../middlewares/private');
 
-// La route pour ajouter un utilisateur
-router.put('/add', service.add);
+// Gestion de la connexion et de la déconnexion des utilisateurs
+router.post('/login', service.login)
+router.get('/logout', service.logout)
 
-// Ajout de la route /authenticate
-router.post('/authenticate', service.authenticate);
-
-// La route pour lister tous les utilisateurs
+// Routes /users pour créer un utilisateur et lister les utilisateurs
+router.post('/', service.add);
 router.get('/', private.checkJWT, service.getAll);
 
 //La route pour lire les infos d'un utilisateur
-router.get('/:id', private.checkJWT, service.getById);
+router.get('/:email', private.checkJWT, service.getByEmail);
 
 // La route pour modifier un utilisateur
-router.patch('/:id', private.checkJWT, service.update);
+router.put('/:email', private.checkJWT, service.update);
 
 // La route pour supprimer un utilisateur
-router.delete('/:id', private.checkJWT, service.delete);
+router.delete('/:email', private.checkJWT, service.delete);
 
 
 module.exports = router;

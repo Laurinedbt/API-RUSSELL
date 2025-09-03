@@ -19,11 +19,11 @@ exports.getAll = async (req, res) => {
   }
 };
 
-exports.getById = async (req, res, next) => {
-    const id = req.params.id
+exports.getByEmail = async (req, res, next) => {
+    const email = req.params.email
 
     try {
-        let user = await User.findById(id);
+        let user = await User.findOne({ email: email });
 
         if (user) {
             return res.status(200).json(user);
@@ -56,7 +56,7 @@ exports.add = async (req, res, next) => {
 // Ici c'est le callback qui servira à modifier un user
 
 exports.update = async (req, res, next) => {
-    const id = req.params.id
+    const email = req.params.email
     const temp = ({
         username : req.body.username,
         email : req.body.email,
@@ -65,7 +65,7 @@ exports.update = async (req, res, next) => {
 
     try  {
 
-        let user = await User.findOne({_id : id});
+        let user = await User.findOne({ email: email });
 
     if (user) {
         Object.keys(temp).forEach((key) => {
@@ -87,9 +87,9 @@ exports.update = async (req, res, next) => {
 // Ici c'est le callback qui servira à supprimer un user
 
 exports.delete = async (req, res, next) => {
-    const id = req.params.id
+    const email = req.params.email
     try {
-        await User.deleteOne({ _id: id});
+        await User.deleteOne({ email: email });
 
         return res.status(204).json('delete_ok');
     } catch (error) {
@@ -97,14 +97,15 @@ exports.delete = async (req, res, next) => {
     }
 }
 
-exports.authenticate = async (req, res, next) => {
+// Callback pour l'authentification, login et logout
+
+exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     try {
         let user = await User.findOne({ email : email }, "-__v -createdAt -updatedAt");
 
         if (user) {
-            // Utilisez await au lieu du callback
             const response = await bcrypt.compare(password, user.password);
             
             if (response) {
@@ -128,6 +129,17 @@ exports.authenticate = async (req, res, next) => {
         } else {
             return res.status(404).json('user_not_found');
         }
+
+    } catch (error) {
+        return res.status(501).json(error);
+    }
+}
+
+
+exports.logout = async (req, res, next) => {
+    try {
+        res.removeHeader('Authorization');
+        return res.status(200).json({ message: 'logout_success' });
 
     } catch (error) {
         return res.status(501).json(error);
