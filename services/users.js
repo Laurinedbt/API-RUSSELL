@@ -113,7 +113,8 @@ exports.login = async (req, res, next) => {
 
                 const expireIn = 24 * 60 * 60;
                 const token = jwt.sign({
-                    user: user
+                    email: user.email,
+                    role: user.role
                 },
                 SECRET_KEY,
                 {
@@ -121,7 +122,14 @@ exports.login = async (req, res, next) => {
                 });
 
                 res.header('Authorization', 'Bearer ' + token);
-                return res.status(200).json('authenticate_succeed');
+                return res.status(200).json({
+                    message:'authenticate_succeed',
+                    token: token,
+                    user: {
+                        email: user.email,
+                        role: user.role
+                    }
+                });
             }
 
             return res.status(403).json('wrong_credentials');
@@ -134,6 +142,34 @@ exports.login = async (req, res, next) => {
         return res.status(501).json(error);
     }
 }
+
+
+// Fonction pour le login côté serveur
+exports.loginReturn = async (email, password) => {
+    try {
+        let user = await User.findOne({ email: email }, "-__v -createdAt -updatedAt");
+
+        if (!user) {
+            throw new Error('user_not_found');
+        }
+
+        const response = await bcrypt.compare(password, user.password);
+        
+        if (!response) {
+            throw new Error('wrong_credentials');
+        }
+
+        delete user._doc.password;
+
+        const expireIn = 24 * 60 * 60;
+        const token = jwt.sign({ user: user }, SECRET_KEY, { expiresIn: expireIn });
+
+        return { token, user }; // Retourne les données, pas de réponse HTTP
+        
+    } catch (error) {
+        throw error;
+    }
+};
 
 
 exports.logout = async (req, res, next) => {

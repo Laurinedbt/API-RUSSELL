@@ -17,10 +17,18 @@ const User = new Schema({
         unique: true, 
         lowercase: true
     },
+
     password: {
         type: String,
         trim: true,
+    },
+
+    role: {
+        type: String,
+        enum: ['admin', 'client'],
+        default: 'client'
     }
+    
 }, {
     // ajoute 2 champs au document createdAt et updateAt
     timestamps: true

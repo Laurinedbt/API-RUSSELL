@@ -4,6 +4,7 @@ const router = express.Router();
 const service = require('../services/users');
 
 const private = require('../middlewares/private');
+const roles = require('../middlewares/roles');
 
 // Gestion de la connexion et de la déconnexion des utilisateurs
 /**

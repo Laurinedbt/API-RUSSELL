@@ -4,6 +4,7 @@ const router = express.Router();
 const service = require('../services/catways');
 
 const private = require('../middlewares/private');
+const roles = require('../middlewares/roles');
 
 /**
  * @swagger
@@ -14,8 +15,8 @@ const private = require('../middlewares/private');
  *     summary: Lister tous les catways
  */
 
-router.post('/', service.add);
-router.get('/', service.getAll)
+router.post('/', private.checkJWT, service.add);
+router.get('/', private.checkJWT, service.getAll)
 
 /**
  * @swagger
