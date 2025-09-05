@@ -4,7 +4,6 @@ const router = express.Router();
 const service = require('../services/reservations');
 
 const private = require('../middlewares/private');
-const roles = require('../middlewares/roles');
 
 // Récupérer toutes les réservations d'un catway et créer une réservation
 
