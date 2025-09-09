@@ -10,6 +10,8 @@ const catwaysRouter = require('./routes/catways');
 const reservationsRouter = require('./routes/reservations');
 const dashboardRouter = require('./routes/dashboard');
 
+const methodOverride = require('method-override');
+
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require('swagger-jsdoc');
 
@@ -50,6 +52,8 @@ app.use('/users', usersRouter);
 app.use('/catways', catwaysRouter);
 app.use('/reservations', reservationsRouter);
 app.use('/dashboard', dashboardRouter);
+
+app.use(methodOverride('_method'));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
