@@ -103,47 +103,53 @@ exports.login = async (req, res, next) => {
     const { email, password } = req.body;
 
     try {
-        let user = await User.findOne({ email : email }, "-__v -createdAt -updatedAt");
+        let user = await User.findOne({ email: email }, "-__v -createdAt -updatedAt");
 
         if (user) {
             const response = await bcrypt.compare(password, user.password);
-            
+
             if (response) {
                 delete user._doc.password;
 
                 const expireIn = 24 * 60 * 60;
-                const token = jwt.sign({
-                    user: user
-                },
-                SECRET_KEY,
-                {
-                        expiresIn: expireIn
+                const token = jwt.sign(
+                    { user: user },
+                    SECRET_KEY,
+                    { expiresIn: expireIn }
+                );
+
+                // Stocker le token en cookie pour réutilisation
+                res.cookie("authToken", token, {
+                    httpOnly: true,
+                    maxAge: expireIn * 1000
                 });
 
-                res.header('Authorization', 'Bearer ' + token);
-                return res.status(200).json({
-                    message:'authenticate_succeed',
-                    token: token
-                });
+                // Redirection vers le dashboard
+                return res.redirect("/dashboard");
             }
 
-            return res.status(403).json('wrong_credentials');
-            
+            return res.status(403).render("login", { error: "Identifiants incorrects" });
+
         } else {
-            return res.status(404).json('user_not_found');
+            return res.status(404).render("login", { error: "Utilisateur non trouvé" });
         }
 
     } catch (error) {
-        return res.status(501).json(error);
+        console.error(error);
+        return res.status(500).render("login", { error: "Erreur serveur" });
     }
-}
+};
+
 
 exports.logout = async (req, res, next) => {
     try {
-        res.removeHeader('Authorization');
-        return res.status(200).json({ message: 'logout_success' });
+        // Supprime le cookie authToken
+        res.clearCookie("authToken");
 
+        // Redirige vers la page d’accueil
+        return res.redirect("/");
     } catch (error) {
-        return res.status(501).json(error);
+        console.error(error);
+        return res.status(500).render("login", { error: "Erreur lors de la déconnexion" });
     }
-}
+};

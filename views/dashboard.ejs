@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord</title>
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+            <li><a href="/users/logout">Se déconnecter</a></li>
+        </ul>
+    </nav>
+
+    <h1>Tableau de bord</h1>
+    <p>Bienvenue <%= user.username %> (<%= user.email %>)</p>
+    <p>Date du jour : <%= today %></p>
+
+    <h2>Vos réservations en cours</h2>
+    <% if (reservations.length > 0) { %>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Catway</th>
+                    <th>Date de début</th>
+                    <th>Date de fin</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% reservations.forEach(r => { %>
+                    <tr>
+                        <td><%= r.catwayId %></td>
+                        <td><%= r.startDate %></td>
+                        <td><%= r.endDate %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    <% } else { %>
+        <p>Aucune réservation en cours.</p>
+    <% } %>
+</body>
+</html>

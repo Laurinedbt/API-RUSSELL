@@ -4,7 +4,6 @@ const router = express.Router();
 const service = require('../services/catways');
 
 const private = require('../middlewares/private');
-const roles = require('../middlewares/roles');
 
 /**
  * @swagger

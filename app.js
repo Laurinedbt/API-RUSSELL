@@ -8,7 +8,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const catwaysRouter = require('./routes/catways');
 const reservationsRouter = require('./routes/reservations');
-// const dashboardRouter = require('./routes/dashboard');
+const dashboardRouter = require('./routes/dashboard');
 
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require('swagger-jsdoc');
@@ -49,7 +49,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/catways', catwaysRouter);
 app.use('/reservations', reservationsRouter);
-// app.use('/dashboard', dashboardRouter);
+app.use('/dashboard', dashboardRouter);
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
