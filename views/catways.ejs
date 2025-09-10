@@ -1,51 +1,61 @@
-<nav>
-    <ul>
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/dashboard">Tableau de bord</a></li>
-        <li><a href="/catways">Catways</a></li>
-        <li><a href="/reservations">Réservations</a></li>
-        <% if(user.role === 'admin'){ %>
-                <li><a href="/users">Utilisateurs</a></li>
-            <% } %>
-        <li><a href="/users/logout">Se déconnecter</a></li>
-        <li><a href="/api-docs" target="_blank">Documentation API</a></li>
-    </ul>
-</nav>
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tableau de bord - Catways</title>
+        <link rel="stylesheet" href="/css/dashboard.css">
+    </head>
+    <body>
+        <nav>
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/dashboard">Tableau de bord</a></li>
+            <li><a href="/dashboard/catways">Catways</a></li>
+            <li><a href="/dashboard/reservations">Réservations</a></li>
+            <% if(user.role === 'admin'){ %>
+                    <li><a href="/dashboard/users">Utilisateurs</a></li>
+                <% } %>
+            <li><a href="/users/logout">Se déconnecter</a></li>
+            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+        </ul>
+    </nav>
 
-<h1>Gestion des Catways</h1>
+    <h1>Gestion des Catways</h1>
 
-    <!-- Ajouter un Catway -->
-    <form action="/catways" method="post">
-        <input type="text" name="name" placeholder="Nom du catway" required>
-        <button type="submit">Ajouter</button>
-    </form>
+        <!-- Ajouter un Catway -->
+        <form action="/catways" method="post">
+            <input type="text" name="name" placeholder="Nom du catway" required>
+            <button type="submit">Ajouter</button>
+        </form>
 
-    <!-- Liste des Catways -->
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% catways.forEach(c => { %>
-            <tr>
-                <td><%= c._id %></td>
-                <td><%= c.name %></td>
-                <td>
-                    <!-- Modifier -->
-                    <form action="/catways/<%= c._id %>?_method=PUT" method="post" style="display:inline">
-                        <input type="text" name="name" placeholder="Nouveau nom" required>
-                        <button type="submit">Modifier</button>
-                    </form>
-                    <!-- Supprimer -->
-                    <form action="/catways/<%= c._id %>?_method=DELETE" method="post" style="display:inline">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-    </table>
+        <!-- Liste des Catways -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nom</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% catways.forEach(c => { %>
+                <tr>
+                    <td><%= c._id %></td>
+                    <td><%= c.name %></td>
+                    <td>
+                        <!-- Modifier -->
+                        <form action="/catways/<%= c._id %>?_method=PUT" method="post" style="display:inline">
+                            <input type="text" name="name" placeholder="Nouveau nom" required>
+                            <button type="submit">Modifier</button>
+                        </form>
+                        <!-- Supprimer -->
+                        <form action="/catways/<%= c._id %>?_method=DELETE" method="post" style="display:inline">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </body>
+</html>

@@ -1,54 +1,65 @@
-<nav>
-    <ul>
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/dashboard">Tableau de bord</a></li>
-        <li><a href="/catways">Catways</a></li>
-        <li><a href="/reservations">Réservations</a></li>
-        <% if(user.role === 'admin'){ %>
-                <li><a href="/users">Utilisateurs</a></li>
-            <% } %>
-        <li><a href="/users/logout">Se déconnecter</a></li>
-        <li><a href="/api-docs" target="_blank">Documentation API</a></li>
-    </ul>
-</nav>
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tableau de bord - Reservations</title>
+        <link rel="stylesheet" href="/css/dashboard.css">
+    </head>
+    <body>
+        <nav>
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/dashboard">Tableau de bord</a></li>
+            <li><a href="/dashboard/catways">Catways</a></li>
+            <li><a href="/dashboard/reservations">Réservations</a></li>
+            <% if(user.role === 'admin'){ %>
+                    <li><a href="/dashboard/users">Utilisateurs</a></li>
+                <% } %>
+            <li><a href="/users/logout">Se déconnecter</a></li>
+            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+        </ul>
+    </nav>
 
-<h1>Gestion des Réservations</h1>
+    <h1>Gestion des Réservations</h1>
 
-    <!-- Ajouter une réservation -->
-    <form action="/reservations" method="post">
-        <select name="catwayId" required>
-            <% catways.forEach(c => { %>
-                <option value="<%= c._id %>"><%= c.name %></option>
-            <% }) %>
-        </select>
-        <input type="date" name="startDate" required>
-        <input type="date" name="endDate" required>
-        <button type="submit">Réserver</button>
-    </form>
+        <!-- Ajouter une réservation -->
+        <form action="/reservations" method="post">
+            <select name="catwayId" required>
+                <% catways.forEach(c => { %>
+                    <option value="<%= c._id %>"><%= c.name %></option>
+                <% }) %>
+            </select>
+            <input type="date" name="startDate" required>
+            <input type="date" name="endDate" required>
+            <button type="submit">Réserver</button>
+        </form>
 
-    <!-- Liste des réservations -->
-    <table>
-        <thead>
-            <tr>
-                <th>Catway</th>
-                <th>Date début</th>
-                <th>Date fin</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% reservations.forEach(r => { %>
-            <tr>
-                <td><%= r.catway.name %></td>
-                <td><%= r.startDate %></td>
-                <td><%= r.endDate %></td>
-                <td>
-                    <!-- Supprimer -->
-                    <form action="/reservations/<%= r._id %>?_method=DELETE" method="post">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-    </table>
+        <!-- Liste des réservations -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Catway</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% reservations.forEach(r => { %>
+                <tr>
+                    <td><%= r.catway.name %></td>
+                    <td><%= r.startDate %></td>
+                    <td><%= r.endDate %></td>
+                    <td>
+                        <!-- Supprimer -->
+                        <form action="/reservations/<%= r._id %>?_method=DELETE" method="post">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </body>
+</html>
+

@@ -1,53 +1,64 @@
-<nav>
-    <ul>
-        <li><a href="/">Accueil</a></li>
-        <li><a href="/dashboard">Tableau de bord</a></li>
-        <li><a href="/catways">Catways</a></li>
-        <li><a href="/reservations">Réservations</a></li>
-        <% if(user.role === 'admin'){ %>
-                <li><a href="/users">Utilisateurs</a></li>
-            <% } %>
-        <li><a href="/users/logout">Se déconnecter</a></li>
-        <li><a href="/api-docs" target="_blank">Documentation API</a></li>
-    </ul>
-</nav>
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tableau de bord - Utilisateurs</title>
+        <link rel="stylesheet" href="/css/dashboard.css">
+    </head>
+    <body>
+        <nav>
+        <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/dashboard">Tableau de bord</a></li>
+            <li><a href="/dashboard/catways">Catways</a></li>
+            <li><a href="dashboard/reservations">Réservations</a></li>
+            <% if(user.role === 'admin'){ %>
+                    <li><a href="/dashboard/users">Utilisateurs</a></li>
+                <% } %>
+            <li><a href="/users/logout">Se déconnecter</a></li>
+            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+        </ul>
+    </nav>
 
-<h1>Gestion des Utilisateurs</h1>
+    <h1>Gestion des Utilisateurs</h1>
 
-    <!-- Ajouter un utilisateur -->
-    <form action="/users" method="post">
-        <input type="text" name="username" placeholder="Nom" required>
-        <input type="email" name="email" placeholder="Email" required>
-        <input type="password" name="password" placeholder="Mot de passe" required>
-        <select name="role">
-            <option value="client">Client</option>
-            <option value="admin">Admin</option>
-        </select>
-        <button type="submit">Ajouter</button>
-    </form>
+        <!-- Ajouter un utilisateur -->
+        <form action="/users" method="post">
+            <input type="text" name="username" placeholder="Nom" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" placeholder="Mot de passe" required>
+            <select name="role">
+                <option value="client">Client</option>
+                <option value="admin">Admin</option>
+            </select>
+            <button type="submit">Ajouter</button>
+        </form>
 
-    <!-- Liste des utilisateurs -->
-    <table>
-        <thead>
-            <tr>
-                <th>Nom</th>
-                <th>Email</th>
-                <th>Rôle</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <% users.forEach(u => { %>
-            <tr>
-                <td><%= u.username %></td>
-                <td><%= u.email %></td>
-                <td><%= u.role %></td>
-                <td>
-                    <form action="/users/<%= u.email %>?_method=DELETE" method="post">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-    </table>
+        <!-- Liste des utilisateurs -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Rôle</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% users.forEach(u => { %>
+                <tr>
+                    <td><%= u.username %></td>
+                    <td><%= u.email %></td>
+                    <td><%= u.role %></td>
+                    <td>
+                        <form action="/users/<%= u.email %>?_method=DELETE" method="post">
+                            <button type="submit">Supprimer</button>
+                        </form>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </body>
+</html>
+
