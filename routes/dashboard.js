@@ -68,23 +68,54 @@ router.delete("/catways/:id", viewAuth, async (req, res) => {
 
 // Page Réservations
 router.get("/reservations", viewAuth, async (req, res) => {
-    const reservations = await Reservation.find();
-    const catways = await Catway.find();
-    res.render("reservations", { user: req.user, reservations, catways });
+    try {
+        const catways = await Catway.find();
+
+        let reservations;
+        if (req.user.role === 'admin') {
+            // Admin voit toutes les réservations
+            reservations = await Reservation.find();
+        } else {
+            // Client ne voit que ses réservations
+            reservations = await Reservation.find({ clientName: req.user.username });
+        }
+
+        res.render("reservations", { user: req.user, reservations, catways });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur récupération réservations");
+    }
 });
+
 
 
 // Ajouter une réservation
 router.post("/reservations", viewAuth, async (req, res) => {
     try {
         const { catwayNumber, clientName, boatName, startDate, endDate } = req.body;
+
+        // Vérifier si le catway est déjà réservé sur cette période
+        const existing = await Reservation.find({
+            catwayNumber,
+            $or: [
+                { startDate: { $lte: new Date(endDate) }, endDate: { $gte: new Date(startDate) } }
+            ]
+        });
+
+        if (existing.length > 0) {
+            // Conflit : catway déjà réservé
+            return res.status(400).send("Ce catway est déjà réservé sur ces dates");
+        }
+
         await Reservation.create({ catwayNumber, clientName, boatName, startDate, endDate });
         res.redirect("/dashboard/reservations");
+
     } catch (err) {
         console.error(err);
         res.status(500).send("Erreur ajout réservation");
     }
 });
+
 
 
 // Supprimer une réservation
