@@ -133,7 +133,7 @@ exports.login = async (req, res, next) => {
 
     } catch (error) {
         console.error(error);
-        return res.status(500).render("login", { error: "Erreur serveur" });
+        return res.status(500).json({ error: "Erreur serveur" });
     }
 };
 
