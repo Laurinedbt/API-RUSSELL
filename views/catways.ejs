@@ -1,61 +1,99 @@
 <!DOCTYPE html>
 <html lang="fr">
-    <head>
-        <meta charset="UTF-8">
-        <title>Tableau de bord - Catways</title>
-        <link rel="stylesheet" href="/css/dashboard.css">
-    </head>
-    <body>
-        <nav>
+<head>
+    <meta charset="UTF-8">
+    <title>Tableau de bord - Catways</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <style>
+        .edit-form { display: none; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <nav>
         <ul>
             <li><a href="/">Accueil</a></li>
             <li><a href="/dashboard">Tableau de bord</a></li>
             <li><a href="/dashboard/catways">Catways</a></li>
             <li><a href="/dashboard/reservations">Réservations</a></li>
-            <% if(user.role === 'admin'){ %>
-                    <li><a href="/dashboard/users">Utilisateurs</a></li>
-                <% } %>
+            <% if (user.role === 'admin') { %>
+                <li><a href="/dashboard/users">Utilisateurs</a></li>
+            <% } %>
             <li><a href="/users/logout">Se déconnecter</a></li>
-            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
         </ul>
     </nav>
 
     <h1>Gestion des Catways</h1>
 
-        <!-- Ajouter un Catway -->
-        <form action="/catways" method="post">
-            <input type="text" name="name" placeholder="Nom du catway" required>
-            <button type="submit">Ajouter</button>
-        </form>
+    <!-- Ajouter un Catway -->
+    <form action="/dashboard/catways" method="post">
+        <input type="number" name="catwayNumber" placeholder="Numéro" required>
+        <select name="catwayType" required>
+            <option value="long">Long</option>
+            <option value="short">Court</option>
+        </select>
+        <input type="text" name="catwayState" placeholder="État">
+        <button type="submit">Ajouter</button>
+    </form>
 
-        <!-- Liste des Catways -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nom</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% catways.forEach(c => { %>
-                <tr>
-                    <td><%= c._id %></td>
-                    <td><%= c.name %></td>
-                    <td>
-                        <!-- Modifier -->
-                        <form action="/catways/<%= c._id %>?_method=PUT" method="post" style="display:inline">
-                            <input type="text" name="name" placeholder="Nouveau nom" required>
-                            <button type="submit">Modifier</button>
-                        </form>
-                        <!-- Supprimer -->
-                        <form action="/catways/<%= c._id %>?_method=DELETE" method="post" style="display:inline">
-                            <button type="submit">Supprimer</button>
-                        </form>
-                    </td>
-                </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    </body>
+    <!-- Liste des Catways -->
+    <table>
+        <thead>
+            <tr>
+                <th>Numéro</th>
+                <th>Type</th>
+                <th>État</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% catways.forEach(c => { %>
+            <tr>
+                <td><%= c.catwayNumber %></td>
+                <td><%= c.catwayType %></td>
+                <td><%= c.catwayState %></td>
+                <td>
+                    <button type="button" class="show-edit" data-id="<%= c._id %>">Modifier</button>
+                    <form action="/dashboard/catways/<%= c._id %>?_method=DELETE" method="post" style="display:inline">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                    
+                    <!-- Formulaire modification caché -->
+                    <form action="/dashboard/catways/<%= c._id %>?_method=PUT" method="post" class="edit-form" id="edit-<%= c._id %>">
+                        <input type="number" name="catwayNumber" value="<%= c.catwayNumber %>" required>
+                        <select name="catwayType">
+                            <option value="long" <%= c.catwayType === 'long' ? 'selected' : '' %>>Long</option>
+                            <option value="short" <%= c.catwayType === 'short' ? 'selected' : '' %>>Court</option>
+                        </select>
+                        <input type="text" name="catwayState" value="<%= c.catwayState %>">
+                        <button type="submit">Enregistrer</button>
+                        <button type="button" class="cancel-edit" data-id="<%= c._id %>">Annuler</button>
+                    </form>
+                </td>
+            </tr>
+            <% }) %>
+        </tbody>
+    </table>
+
+    <script>
+        document.querySelectorAll('.show-edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                document.getElementById(`edit-${id}`).style.display = 'inline';
+                btn.style.display = 'none';
+            });
+        });
+
+        document.querySelectorAll('.cancel-edit').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.dataset.id;
+                document.getElementById(`edit-${id}`).style.display = 'none';
+                document.querySelector(`.show-edit[data-id='${id}']`).style.display = 'inline';
+            });
+        });
+    </script>
+</body>
 </html>
+
+
+
+

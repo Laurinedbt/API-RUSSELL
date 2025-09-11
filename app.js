@@ -47,13 +47,13 @@ app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(methodOverride('_method'));
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/catways', catwaysRouter);
 app.use('/reservations', reservationsRouter);
 app.use('/dashboard', dashboardRouter);
-
-app.use(methodOverride('_method'));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 

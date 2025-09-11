@@ -5,7 +5,7 @@ const Catway = require("../models/catway");
 const Reservation = require("../models/reservation");
 const User = require("../models/user");
 
-
+// Tableau de bord
 router.get("/", viewAuth, async (req, res) => {
     const reservations = [];
     res.render("dashboard", {
@@ -15,24 +15,119 @@ router.get("/", viewAuth, async (req, res) => {
     });
 });
 
-// Catways page
+
+// ------------------ CATWAYS ------------------
+// Page Catways
 router.get("/catways", viewAuth, async (req, res) => {
-    const catways = await Catway.find();
-    res.render("catways", { user: req.user, catways });
+    try {
+        const catways = await Catway.find();  // récupère tous les catways
+        res.render("catways", { user: req.user, catways });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur récupération catways");
+    }
 });
 
-// Réservations page
+
+// Ajouter un catway
+router.post("/catways", viewAuth, async (req, res) => {
+    try {
+        const { catwayNumber, catwayType, catwayState } = req.body;
+        await Catway.create({ catwayNumber, catwayType, catwayState });
+        res.redirect("/dashboard/catways");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur ajout catway");
+    }
+});
+
+// Modifier un catway
+router.put("/catways/:id", viewAuth, async (req, res) => {
+    try {
+        const { catwayNumber, catwayType, catwayState } = req.body;
+        await Catway.findByIdAndUpdate(req.params.id, { catwayNumber, catwayType, catwayState });
+        res.redirect("/dashboard/catways");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur modification catway");
+    }
+});
+
+// Supprimer un catway
+router.delete("/catways/:id", viewAuth, async (req, res) => {
+    try {
+        await Catway.findByIdAndDelete(req.params.id);
+        res.redirect("/dashboard/catways");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur suppression catway");
+    }
+});
+
+// ------------------ RESERVATIONS ------------------
+
+// Page Réservations
 router.get("/reservations", viewAuth, async (req, res) => {
-    const reservations = await Reservation.find().populate("catwayId");
+    const reservations = await Reservation.find();
     const catways = await Catway.find();
     res.render("reservations", { user: req.user, reservations, catways });
 });
 
-// Utilisateurs page (admin uniquement)
+
+// Ajouter une réservation
+router.post("/reservations", viewAuth, async (req, res) => {
+    try {
+        const { catwayNumber, clientName, boatName, startDate, endDate } = req.body;
+        await Reservation.create({ catwayNumber, clientName, boatName, startDate, endDate });
+        res.redirect("/dashboard/reservations");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur ajout réservation");
+    }
+});
+
+
+// Supprimer une réservation
+router.delete("/reservations/:id", viewAuth, async (req, res) => {
+    try {
+        await Reservation.findByIdAndDelete(req.params.id);
+        res.redirect("/dashboard/reservations");
+    } catch (err) {
+        console.error(err);
+        res.status(500).send("Erreur suppression réservation");
+    }
+});
+
+
+// ------------------ UTILISATEURS (admin) ------------------
+// Page Utilisateurs
 router.get("/users", viewAuth, async (req, res) => {
-    if(req.user.role !== 'admin') return res.redirect("/dashboard");
+    if (req.user.role !== "admin") return res.redirect("/dashboard");
     const users = await User.find();
     res.render("users", { user: req.user, users });
+});
+
+// Ajouter un utilisateur
+router.post("/users", viewAuth, async (req, res) => {
+    if (req.user.role !== "admin") return res.redirect("/dashboard");
+    const { username, email, password, role } = req.body;
+    await User.create({ username, email, password, role });
+    res.redirect("/dashboard/users");
+});
+
+// Modifier un utilisateur
+router.put("/users/:id", viewAuth, async (req, res) => {
+    if (req.user.role !== "admin") return res.redirect("/dashboard");
+    const { username, email, role } = req.body;
+    await User.findByIdAndUpdate(req.params.id, { username, email, role });
+    res.redirect("/dashboard/users");
+});
+
+// Supprimer un utilisateur
+router.delete("/users/:id", viewAuth, async (req, res) => {
+    if (req.user.role !== "admin") return res.redirect("/dashboard");
+    await User.findByIdAndDelete(req.params.id);
+    res.redirect("/dashboard/users");
 });
 
 

@@ -7,20 +7,20 @@
     </head>
     <body>
         <nav>
-        <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/dashboard">Tableau de bord</a></li>
-            <li><a href="/dashboard/catways">Catways</a></li>
-            <li><a href="dashboard/reservations">Réservations</a></li>
-            <% if(user.role === 'admin'){ %>
-                    <li><a href="/dashboard/users">Utilisateurs</a></li>
-                <% } %>
-            <li><a href="/users/logout">Se déconnecter</a></li>
-            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
-        </ul>
-    </nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/dashboard">Tableau de bord</a></li>
+                <li><a href="/dashboard/catways">Catways</a></li>
+                <li><a href="dashboard/reservations">Réservations</a></li>
+                <% if(user.role === 'admin'){ %>
+                        <li><a href="/dashboard/users">Utilisateurs</a></li>
+                    <% } %>
+                <li><a href="/users/logout">Se déconnecter</a></li>
+                <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+            </ul>
+        </nav>
 
-    <h1>Gestion des Utilisateurs</h1>
+        <h1>Gestion des Utilisateurs</h1>
 
         <!-- Ajouter un utilisateur -->
         <form action="/users" method="post">
@@ -51,14 +51,70 @@
                     <td><%= u.email %></td>
                     <td><%= u.role %></td>
                     <td>
-                        <form action="/users/<%= u.email %>?_method=DELETE" method="post">
+                        <!-- Supprimer -->
+                        <form action="/users/<%= u.email %>?_method=DELETE" method="post" style="display:inline">
                             <button type="submit">Supprimer</button>
                         </form>
+
+                        <!-- Modifier (ouvre une modale) -->
+                        <button type="button" onclick="openEditModal('<%= u.username %>', '<%= u.email %>', '<%= u.role %>')">
+                            Modifier
+                        </button>
                     </td>
                 </tr>
                 <% }) %>
             </tbody>
+
         </table>
+
+                <!-- Modale de modification -->
+        <div id="editModal">
+            <div>
+                <h2>Modifier l'utilisateur</h2>
+                <form id="editForm" method="post">
+                    <input type="hidden" name="_method" value="PUT">
+                    
+                    <label>Nom :</label>
+                    <input type="text" name="username" id="editUsername" required><br><br>
+                    
+                    <label>Email :</label>
+                    <input type="email" name="email" id="editEmail" required><br><br>
+                    
+                    <label>Mot de passe (laisser vide si inchangé) :</label>
+                    <input type="password" name="password"><br><br>
+                    
+                    <label>Rôle :</label>
+                    <select name="role" id="editRole">
+                        <option value="client">Client</option>
+                        <option value="admin">Admin</option>
+                    </select><br><br>
+                    
+                    <button type="submit">Enregistrer</button>
+                    <button type="button" onclick="closeEditModal()">Annuler</button>
+                </form>
+            </div>
+        </div>
+
+
+        <script>
+            function openEditModal(username, email, role) {
+                // Remplir les champs
+                document.getElementById("editUsername").value = username;
+                document.getElementById("editEmail").value = email;
+                document.getElementById("editRole").value = role;
+
+                // Définir l’action du formulaire (PUT sur /users/:email)
+                document.getElementById("editForm").action = "/users/" + encodeURIComponent(email);
+
+                // Afficher la modale
+                document.getElementById("editModal").style.display = "flex";
+            }
+
+            function closeEditModal() {
+                document.getElementById("editModal").style.display = "none";
+            }
+    </script>
+
     </body>
 </html>
 
