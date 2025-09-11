@@ -1,4 +1,8 @@
 const express = require('express');
+
+const mongodb = require('./db/mongo');
+mongodb.initClientDbConnection();
+
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
@@ -29,10 +33,6 @@ const options = {
 };
 
 const specs = swaggerJsdoc(options);
-
-const mongodb = require('./db/mongo');
-
-mongodb.initClientDbConnection();
 
 const app = express();
 
