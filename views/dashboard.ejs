@@ -1,51 +1,51 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Tableau de bord</title>
-    <link rel="stylesheet" href="/css/dashboard.css">
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/dashboard">Tableau de bord</a></li>
-            <li><a href="/dashboard/reservations">Réservations</a></li>
-            <% if(user.role === 'admin'){ %>
-                <li><a href="/dashboard/users">Utilisateurs</a></li>
-                <li><a href="/dashboard/catways">Catways</a></li>
-            <% } %>
-            <li><a href="/users/logout">Se déconnecter</a></li>
-            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
-        </ul>
-    </nav>
+    <head>
+        <meta charset="UTF-8">
+        <title>Tableau de bord</title>
+        <link rel="stylesheet" href="/css/dashboard.css">
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/dashboard">Tableau de bord</a></li>
+                <li><a href="/dashboard/reservations">Réservations</a></li>
+                <% if(user.role === 'admin'){ %>
+                    <li><a href="/dashboard/users">Utilisateurs</a></li>
+                    <li><a href="/dashboard/catways">Catways</a></li>
+                <% } %>
+                <li><a href="/users/logout">Se déconnecter</a></li>
+                <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+            </ul>
+        </nav>
 
-    <h1>Tableau de bord</h1>
-    <p>Bienvenue <%= user.username %> (<%= user.email %>)</p>
-    <p>Date du jour : <%= today %></p>
+        <h1>Tableau de bord</h1>
+        <p>Bienvenue <%= user.username %> (<%= user.email %>)</p>
+        <p>Date du jour : <%= today %></p>
 
-    <h2>Vos réservations en cours</h2>
-    <% if (reservations.length > 0) { %>
-        <table>
-            <thead>
-                <tr>
-                    <th>Catway</th>
-                    <th>Date de début</th>
-                    <th>Date de fin</th>
-                </tr>
-            </thead>
-            <tbody>
-                <% reservations.forEach(r => { %>
+        <h2>Vos réservations en cours</h2>
+        <% if (reservations.length > 0) { %>
+            <table>
+                <thead>
                     <tr>
-                        <td><%= r.catwayId %></td>
-                        <td><%= r.startDate %></td>
-                        <td><%= r.endDate %></td>
+                        <th>Catway</th>
+                        <th>Date de début</th>
+                        <th>Date de fin</th>
                     </tr>
-                <% }) %>
-            </tbody>
-        </table>
-    <% } else { %>
-        <p>Aucune réservation en cours.</p>
-    <% } %>
-</body>
+                </thead>
+                <tbody>
+                    <% reservations.forEach(r => { %>
+                        <tr>
+                            <td><%= r.catwayId %></td>
+                            <td><%= r.startDate %></td>
+                            <td><%= r.endDate %></td>
+                        </tr>
+                    <% }) %>
+                </tbody>
+            </table>
+        <% } else { %>
+            <p>Aucune réservation en cours.</p>
+        <% } %>
+    </body>
 </html>

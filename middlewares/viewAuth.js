@@ -1,3 +1,4 @@
+// Vérifier que l’utilisateur est connecté avant de lui permettre d’accéder à certaines pages du dashboard
 
 const jwt = require("jsonwebtoken");
 const SECRET_KEY = process.env.SECRET_KEY;

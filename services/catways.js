@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 
-// On exporte le callback afin d'y accéder dans notre gestionnaire de routes
-
-
 // Récupérer tous les catways
 exports.getAll = async (req, res) => {
   try {
@@ -34,7 +31,7 @@ exports.getById = async (req, res, next) => {
     }
 }
 
-// Ici c'est le callback qui servira à ajouter un catway
+// Callback pour ajouter un catway
 exports.add = async (req, res, next) => {
 
     const temp = ({
@@ -52,7 +49,7 @@ exports.add = async (req, res, next) => {
     }
 }
 
-// Ici c'est le callback qui servira à modifier un catway
+// Callback pour modifier un catway
 
 exports.update = async (req, res, next) => {
     const id = req.params.id
@@ -83,7 +80,7 @@ exports.update = async (req, res, next) => {
     }
 }
 
-// Ici c'est le callback qui servira à supprimer un catway
+// Callback pour supprimer un catway
 
 exports.delete = async (req, res, next) => {
     const id = req.params.id

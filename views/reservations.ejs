@@ -1,113 +1,113 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Tableau de bord - Réservations</title>
-    <link rel="stylesheet" href="/css/dashboard.css">
-    <style>
-        .edit-form { display: none; margin-top: 10px; }
-    </style>
-</head>
-<body>
-    <nav>
-        <ul>
-            <li><a href="/">Accueil</a></li>
-            <li><a href="/dashboard">Tableau de bord</a></li>
-            <li><a href="/dashboard/reservations">Réservations</a></li>
-            <% if(user.role === 'admin'){ %>
-                <li><a href="/dashboard/users">Utilisateurs</a></li>
-                <li><a href="/dashboard/catways">Catways</a></li>
-            <% } %>
-            <li><a href="/users/logout">Se déconnecter</a></li>
-            <li><a href="/api-docs" target="_blank">Documentation API</a></li>
-        </ul>
-    </nav>
-
-    <h1>Gestion des Réservations</h1>
-
-    <!-- Ajouter une réservation -->
-    <form action="/dashboard/reservations" method="post">
-        <select name="catwayNumber" required>
-            <% catways.forEach(c => { %>
-                <option value="<%= c.catwayNumber %>">Catway <%= c.catwayNumber %> (<%= c.catwayType %>)</option>
-            <% }) %>
-        </select>
-        <input type="text" name="clientName" placeholder="Nom du client" required>
-        <input type="text" name="boatName" placeholder="Nom du bateau" required>
-        <input type="date" name="startDate" required>
-        <input type="date" name="endDate" required>
-        <button type="submit">Réserver</button>
-    </form>
-
-    <!-- Liste des réservations -->
-    <table>
-        <thead>
-            <tr>
-                <th>Catway</th>
-                <th>Type</th>
-                <th>Client</th>
-                <th>Bateau</th>
-                <th>Date début</th>
-                <th>Date fin</th>
+    <head>
+        <meta charset="UTF-8">
+        <title>Tableau de bord - Réservations</title>
+        <link rel="stylesheet" href="/css/dashboard.css">
+        <style>
+            .edit-form { display: none; margin-top: 10px; }
+        </style>
+    </head>
+    <body>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="/dashboard">Tableau de bord</a></li>
+                <li><a href="/dashboard/reservations">Réservations</a></li>
                 <% if(user.role === 'admin'){ %>
-                <th>Actions</th>
+                    <li><a href="/dashboard/users">Utilisateurs</a></li>
+                    <li><a href="/dashboard/catways">Catways</a></li>
                 <% } %>
-            </tr>
-        </thead>
-        <tbody>
-            <% reservations.forEach(r => { 
-                const catway = catways.find(c => c.catwayNumber == r.catwayNumber);
-            %>
-            <tr>
-                <td><%= r.catwayNumber %></td>
-                <td><%= catway ? catway.catwayType : 'Inconnu' %></td>
-                <td><%= r.clientName %></td>
-                <td><%= r.boatName %></td>
-                <td><%= new Date(r.startDate).toLocaleDateString("fr-FR") %></td>
-                <td><%= new Date(r.endDate).toLocaleDateString("fr-FR") %></td>
-                <td>
+                <li><a href="/users/logout">Se déconnecter</a></li>
+                <li><a href="/api-docs" target="_blank">Documentation API</a></li>
+            </ul>
+        </nav>
 
+        <h1>Gestion des Réservations</h1>
+
+        <!-- Ajouter une réservation -->
+        <form action="/dashboard/reservations" method="post">
+            <select name="catwayNumber" required>
+                <% catways.forEach(c => { %>
+                    <option value="<%= c.catwayNumber %>">Catway <%= c.catwayNumber %> (<%= c.catwayType %>)</option>
+                <% }) %>
+            </select>
+            <input type="text" name="clientName" placeholder="Nom du client" required>
+            <input type="text" name="boatName" placeholder="Nom du bateau" required>
+            <input type="date" name="startDate" required>
+            <input type="date" name="endDate" required>
+            <button type="submit">Réserver</button>
+        </form>
+
+        <!-- Liste des réservations -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Catway</th>
+                    <th>Type</th>
+                    <th>Client</th>
+                    <th>Bateau</th>
+                    <th>Date début</th>
+                    <th>Date fin</th>
                     <% if(user.role === 'admin'){ %>
-                        <button type="button" id="btn-edit-<%= r._id %>" onclick="toggleEditForm('<%= r._id %>')">Modifier</button>
-
-                        <form id="edit-<%= r._id %>" action="/dashboard/reservations/<%= r._id %>?_method=PUT" method="post" style="display:none; margin-top:5px;">
-                            <select name="catwayNumber" required>
-                                <% catways.forEach(c => { %>
-                                    <option value="<%= c.catwayNumber %>" <%= c.catwayNumber === r.catwayNumber ? 'selected' : '' %>>
-                                        Catway <%= c.catwayNumber %> (<%= c.catwayType %>)
-                                    </option>
-                                <% }) %>
-                            </select>
-                            <input type="text" name="clientName" value="<%= r.clientName %>" required>
-                            <input type="text" name="boatName" value="<%= r.boatName %>" required>
-                            <input type="date" name="startDate" value="<%= r.startDate.toISOString().split('T')[0] %>" required>
-                            <input type="date" name="endDate" value="<%= r.endDate.toISOString().split('T')[0] %>" required>
-                            <button type="submit">Valider</button>
-                            <button type="button" onclick="toggleEditForm('<%= r._id %>')">Annuler</button>
-                        </form>
-
-                        
-                        <form action="/dashboard/reservations/<%= r._id %>?_method=DELETE" method="post" style="display:inline">
-                            <button type="submit">Supprimer</button>
-                        </form>
+                    <th>Actions</th>
                     <% } %>
-                </td>
-            </tr>
-            <% }) %>
-        </tbody>
-    </table>
+                </tr>
+            </thead>
+            <tbody>
+                <% reservations.forEach(r => { 
+                    const catway = catways.find(c => c.catwayNumber == r.catwayNumber);
+                %>
+                <tr>
+                    <td><%= r.catwayNumber %></td>
+                    <td><%= catway ? catway.catwayType : 'Inconnu' %></td>
+                    <td><%= r.clientName %></td>
+                    <td><%= r.boatName %></td>
+                    <td><%= new Date(r.startDate).toLocaleDateString("fr-FR") %></td>
+                    <td><%= new Date(r.endDate).toLocaleDateString("fr-FR") %></td>
+                    <td>
 
-    <script>
-        function toggleEditForm(id) {
-            const form = document.getElementById('edit-' + id);
-            const btn = document.getElementById('btn-edit-' + id);
-            const isHidden = form.style.display === 'none';
-            form.style.display = isHidden ? 'block' : 'none';
-            btn.style.display = isHidden ? 'none' : 'inline-block';
-        }
-    </script>
+                        <% if(user.role === 'admin'){ %>
+                            <button type="button" id="btn-edit-<%= r._id %>" onclick="toggleEditForm('<%= r._id %>')">Modifier</button>
 
-</body>
+                            <form id="edit-<%= r._id %>" action="/dashboard/reservations/<%= r._id %>?_method=PUT" method="post" style="display:none; margin-top:5px;">
+                                <select name="catwayNumber" required>
+                                    <% catways.forEach(c => { %>
+                                        <option value="<%= c.catwayNumber %>" <%= c.catwayNumber === r.catwayNumber ? 'selected' : '' %>>
+                                            Catway <%= c.catwayNumber %> (<%= c.catwayType %>)
+                                        </option>
+                                    <% }) %>
+                                </select>
+                                <input type="text" name="clientName" value="<%= r.clientName %>" required>
+                                <input type="text" name="boatName" value="<%= r.boatName %>" required>
+                                <input type="date" name="startDate" value="<%= r.startDate.toISOString().split('T')[0] %>" required>
+                                <input type="date" name="endDate" value="<%= r.endDate.toISOString().split('T')[0] %>" required>
+                                <button type="submit">Valider</button>
+                                <button type="button" onclick="toggleEditForm('<%= r._id %>')">Annuler</button>
+                            </form>
+
+                            
+                            <form action="/dashboard/reservations/<%= r._id %>?_method=DELETE" method="post" style="display:inline">
+                                <button type="submit">Supprimer</button>
+                            </form>
+                        <% } %>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+
+        <script>
+            function toggleEditForm(id) {
+                const form = document.getElementById('edit-' + id);
+                const btn = document.getElementById('btn-edit-' + id);
+                const isHidden = form.style.display === 'none';
+                form.style.display = isHidden ? 'block' : 'none';
+                btn.style.display = isHidden ? 'none' : 'inline-block';
+            }
+        </script>
+
+    </body>
 </html>
 
 

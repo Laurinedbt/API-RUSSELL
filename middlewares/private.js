@@ -24,7 +24,7 @@ exports.checkJWT = async (req, res, next) => {
                     { expiresIn: expiresIn }
                 );
 
-                // On renvoie le token mis à jour dans le header (optionnel)
+                // On renvoie le token mis à jour dans le header
                 res.header("Authorization", 'Bearer ' + newToken);
                 next();
             }

@@ -3,7 +3,7 @@ const router = express.Router();
 
 const userRoute = require('../routes/users');
 
-/* GET page de connexion */
+// Page de connexion/accueil
 router.get('/', async (req, res) => {
   res.render('index', {
     title: 'Accueil',

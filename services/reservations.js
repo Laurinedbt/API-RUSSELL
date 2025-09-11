@@ -5,9 +5,6 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 
-// On exporte le callback afin d'y accéder dans notre gestionnaire de routes
-
-
 // Récupérer toutes les réservations
 exports.getReservations = async (req, res) => {
   try {
@@ -34,7 +31,7 @@ exports.getReservationById = async (req, res, next) => {
     }
 }
 
-// Callback qui servira à ajouter une réservation
+// Callback pour ajouter une réservation
 exports.addReservation = async (req, res, next) => {
 
     const temp = ({
@@ -54,7 +51,7 @@ exports.addReservation = async (req, res, next) => {
     }
 }
 
-// Callback qui servira à modifier une réservation
+// Callback pour modifier une réservation
 
 exports.updateReservation = async (req, res, next) => {
     const idReservation = req.params.idReservation
@@ -87,7 +84,7 @@ exports.updateReservation = async (req, res, next) => {
     }
 }
 
-// Callback qui servira à supprimer une réservation
+// Callback pour supprimer une réservation
 
 exports.deleteReservation = async (req, res, next) => {
     const idReservation = req.params.idReservation

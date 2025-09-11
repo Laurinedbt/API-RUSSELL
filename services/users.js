@@ -6,9 +6,6 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.SECRET_KEY;
 
 
-// On exporte le callback afin d'y accéder dans notre gestionnaire de routes
-
-
 // Récupérer tous les utilisateurs
 exports.getAll = async (req, res) => {
   try {
@@ -35,7 +32,7 @@ exports.getByEmail = async (req, res, next) => {
     }
 }
 
-// Ici c'est le callback qui servira à ajouter un user
+// Callback pour à ajouter un user
 exports.add = async (req, res, next) => {
 
     const temp = ({
@@ -53,7 +50,7 @@ exports.add = async (req, res, next) => {
     }
 }
 
-// Ici c'est le callback qui servira à modifier un user
+// Callback pour modifier un user
 
 exports.update = async (req, res, next) => {
     const email = req.params.email
@@ -84,7 +81,7 @@ exports.update = async (req, res, next) => {
     }
 }
 
-// Ici c'est le callback qui servira à supprimer un user
+// Callback pour supprimer un user
 
 exports.delete = async (req, res, next) => {
     const email = req.params.email
